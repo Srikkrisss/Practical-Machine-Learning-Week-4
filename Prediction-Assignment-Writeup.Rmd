@@ -3,13 +3,13 @@ title: "Practical Machine Learning"
 author: "Tobias Heidler"
 date: '2020-11-14'
 output:
-  github_document:
+  html_document:
     toc: yes
-  pdf_document:
+  github_document:
     toc: yes
   pdf:
     toc: yes
-  html_document:
+  pdf_document:
     toc: yes
 subtitle: Prediction Assignment - Week 4
 ---
@@ -94,15 +94,16 @@ As seen in the first exploratory plot in the annex section there are many missin
 
 ## Model training
 
-The training dataset is split into two parts, train and validate (80% : 20% Split). Validate will be used to detect out of sample (OOS) errors and to detect overfitting. Train will be used to train three different algorithms:
+The training dataset is split into two parts, train and validate (80% : 20% Split). Crossvalidations of train will be used to detect out of sample (OOS) errors and the validate data set to detect overfitting. Expected OOS-error will be less than 1% in case of a good prediction algorithm. Train will be used to train three different algorithms:
 
 * Classification and Regression Trees `rpart`
-* Random Forrest `rf`
+* Random Forest `rf`
 * Generalized Linear Model via Penalized Maximum Likelihood for Multinomial Models `glmnet` 
 
 For each algorithm five different parameter sets will be tuned automatically on a 5x5 repeated, cross-validated train data set. The model for each algorithm with the best accuracy will be further described.
 
 Time to compute these models is reduced by using multithreading (`doParallel` library, six threads, choose other values based on your system) and saving the models for further computations.
+
 
 ### Splitting the data
 
@@ -127,7 +128,9 @@ test <- predict(prepare, pml_testing)
 # Crossfold Validation x5
 fitControl <- trainControl(method = "repeatedcv",
                            number = 5,
-                           repeats = 5)
+                           repeats = 5,
+                           savePredictions=TRUE,
+                           classProbs=TRUE)
 ```
 
 ### Training
@@ -216,7 +219,7 @@ ggplot(performance %>% filter(term == "accuracy"),
 
 The overall performance of `rf` is superior compared to the other two models, `rpart` and `glmnet`, on the training and validation dataset. Overall the accuracy of `rpart` and `glmnet` is lower than I expected. Performance of the `glmnet` could be further improved by choosing higher `lambda`-values. Lower `lambda`-values provoke a warning message that no convergence can be found after the maximum amount of iterations. Both models could improve by choosing a better parameter set.
 
-The performance of all models is is a bit lower on the validation data, but overall near the accuracy of the training data implying a low OOS and rejecting an overfitting of the train data split. Though I suspect, given extremly high accuracy of the `rf` model, that this model would perform poorly in a real world setting with other participiants and other measuring devices. A problem known for machine learning. This is further described in [this paper](https://arxiv.org/abs/2011.03395) for example. 
+The performance of all models is is a bit lower on the validation data, but overall near the accuracy of the training data implying a low OOS, which is less than 1 % according to the model metrics for `rf` (see: Metrics for Random Forest), and rejecting an overfitting of the train data split as seen in the validation data prediction accuracy. This low OOS-error is as expected. Though I suspect, given extremly high accuracy of the `rf` model, that this model would perform poorly in a real world setting with other participiants and other measuring devices. A problem known for machine learning. This is further described in [this paper](https://arxiv.org/abs/2011.03395) for example. 
 
 This could be avoided by removing predictors that are highly specific to this data set, like the `user_name`, `num_window` or `cvtd_timestamp` and aquiring a much bigger data set with more devices and more diverse users. `cvtd_timestamp` seems to have a reasonable high impact on the prediction but has no impact in a real world setting (see: Predictor Impact in the Annex).
 
@@ -261,4 +264,11 @@ plot_features(explanation) +
        subtitle="Based on an example in the validation data set",
        caption="Index: 826")
 ```
+
+### Metrics for Random Forest
+
+```{r metrics}
+rfFit
+```
+
 
