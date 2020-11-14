@@ -261,7 +261,6 @@ models could improve by choosing a better parameter set.
 
 The performance of all models is is a bit lower on the validation data,
 but overall near the accuracy of the training data implying a low OOS,
-<<<<<<< HEAD
 which is less than 1 % according to the model metrics for `rf` (0.08%,
 see: Metrics for Random Forest), and rejecting an overfitting of the
 train data split as seen in the validation data prediction accuracy.
@@ -269,15 +268,6 @@ This low OOS-error is as expected. Though I suspect, given extremly high
 accuracy of the `rf` model, that this model would perform poorly in a
 real world setting with other participiants and other measuring devices.
 A problem known for machine learning. This is further described in [this
-=======
-which is less than 1 % according to the model metrics for `rf` (see:
-Metrics for Random Forest), and rejecting an overfitting of the train
-data split as seen in the validation data prediction accuracy. This low
-OOS-error is as expected. Though I suspect, given extremly high accuracy
-of the `rf` model, that this model would perform poorly in a real world
-setting with other participiants and other measuring devices. A problem
-known for machine learning. This is further described in [this
->>>>>>> 2ff78fd82304c2901bdf5639d1e0c58e6a86331c
 paper](https://arxiv.org/abs/2011.03395) for example.
 
 This could be avoided by removing predictors that are highly specific to
@@ -360,7 +350,6 @@ plot_features(explanation) +
 ### Metrics for Random Forest
 
 ``` r
-<<<<<<< HEAD
 rfFit$finalModel
 ```
 
@@ -379,29 +368,3 @@ rfFit$finalModel
     ## C    0    2 2735    1    0 0.0010956903
     ## D    0    0    2 2569    2 0.0015546055
     ## E    0    0    0    3 2883 0.0010395010
-=======
-rfFit
-```
-
-    ## Random Forest 
-    ## 
-    ## 15699 samples
-    ##    55 predictor
-    ##     5 classes: 'A', 'B', 'C', 'D', 'E' 
-    ## 
-    ## No pre-processing
-    ## Resampling: Cross-Validated (5 fold, repeated 5 times) 
-    ## Summary of sample sizes: 12561, 12560, 12558, 12558, 12559, 12560, ... 
-    ## Resampling results across tuning parameters:
-    ## 
-    ##   mtry  Accuracy   Kappa    
-    ##    2    0.9963438  0.9953751
-    ##   13    0.9989936  0.9987270
-    ##   24    0.9990191  0.9987593
-    ##   36    0.9988534  0.9985498
-    ##   47    0.9984713  0.9980664
-    ##   59    0.9972483  0.9965192
-    ## 
-    ## Accuracy was used to select the optimal model using the largest value.
-    ## The final value used for the model was mtry = 24.
->>>>>>> 2ff78fd82304c2901bdf5639d1e0c58e6a86331c
