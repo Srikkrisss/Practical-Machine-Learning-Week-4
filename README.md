@@ -16,6 +16,7 @@ Tobias Heidler
   - [Annex](#annex)
       - [Exploratory Plot](#exploratory-plot)
       - [Predictor Impact](#predictor-impact)
+      - [Metrics for Random Forest](#metrics-for-random-forest)
 
 ## Abstract
 
@@ -117,12 +118,13 @@ training the models.
 ## Model training
 
 The training dataset is split into two parts, train and validate (80% :
-20% Split). Validate will be used to detect out of sample (OOS) errors
-and to detect overfitting. Train will be used to train three different
-algorithms:
+20% Split). Crossvalidations of train will be used to detect out of
+sample (OOS) errors and the validate data set to detect overfitting.
+Expected OOS-error will be less than 1% in case of a good prediction
+algorithm. Train will be used to train three different algorithms:
 
   - Classification and Regression Trees `rpart`
-  - Random Forrest `rf`
+  - Random Forest `rf`
   - Generalized Linear Model via Penalized Maximum Likelihood for
     Multinomial Models `glmnet`
 
@@ -158,7 +160,9 @@ test <- predict(prepare, pml_testing)
 # Crossfold Validation x5
 fitControl <- trainControl(method = "repeatedcv",
                            number = 5,
-                           repeats = 5)
+                           repeats = 5,
+                           savePredictions=TRUE,
+                           classProbs=TRUE)
 ```
 
 ### Training
@@ -256,13 +260,15 @@ convergence can be found after the maximum amount of iterations. Both
 models could improve by choosing a better parameter set.
 
 The performance of all models is is a bit lower on the validation data,
-but overall near the accuracy of the training data implying a low OOS
-and rejecting an overfitting of the train data split. Though I suspect,
-given extremly high accuracy of the `rf` model, that this model would
-perform poorly in a real world setting with other participiants and
-other measuring devices. A problem known for machine learning. This is
-further described in [this paper](https://arxiv.org/abs/2011.03395) for
-example.
+but overall near the accuracy of the training data implying a low OOS,
+which is less than 1 % according to the model metrics for `rf` (0.08%,
+see: Metrics for Random Forest), and rejecting an overfitting of the
+train data split as seen in the validation data prediction accuracy.
+This low OOS-error is as expected. Though I suspect, given extremly high
+accuracy of the `rf` model, that this model would perform poorly in a
+real world setting with other participiants and other measuring devices.
+A problem known for machine learning. This is further described in [this
+paper](https://arxiv.org/abs/2011.03395) for example.
 
 This could be avoided by removing predictors that are highly specific to
 this data set, like the `user_name`, `num_window` or `cvtd_timestamp`
@@ -340,3 +346,25 @@ plot_features(explanation) +
 ```
 
 ![](Prediction-Assignment-Writeup_files/figure-gfm/PredictorImpact-1.png)<!-- -->
+
+### Metrics for Random Forest
+
+``` r
+rfFit$finalModel
+```
+
+    ## 
+    ## Call:
+    ##  randomForest(x = x, y = y, mtry = param$mtry) 
+    ##                Type of random forest: classification
+    ##                      Number of trees: 500
+    ## No. of variables tried at each split: 24
+    ## 
+    ##         OOB estimate of  error rate: 0.08%
+    ## Confusion matrix:
+    ##      A    B    C    D    E  class.error
+    ## A 4464    0    0    0    0 0.0000000000
+    ## B    2 3035    1    0    0 0.0009874918
+    ## C    0    2 2735    1    0 0.0010956903
+    ## D    0    0    2 2569    2 0.0015546055
+    ## E    0    0    0    3 2883 0.0010395010
