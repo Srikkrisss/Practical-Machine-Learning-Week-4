@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+pml-testing.csv
+pml-training.csv
+Practical-Machine-Learning-Week-4.Rproj
+Prediction-Assignment-Writeup.html
+Prediction-Assignment-Writeup.nb.html
+Prediction-Assignment-Writeup.pdf
+model_glmnet.rda
+model_rfFit.rda
+model_rpartFit.rda
