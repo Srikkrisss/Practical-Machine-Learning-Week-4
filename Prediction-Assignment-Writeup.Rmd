@@ -89,8 +89,6 @@ pml_testing <- prepare(pml_testing,F)
 
 ## Exploratory Analysis
 
-### Possible Values
-
 As seen in the first exploratory plot in the annex section there are many missing values which we will exclude in the upcoming analysis. Furthermore the data shows a huge amount of variability that can be dampened by centering and normalizing, though we still have some outliers. The number of these outliers is low, so all data is used for training the models.
 
 
@@ -244,8 +242,6 @@ nClasses <- pml_training %>% count(classe)
 
 par(mfrow=c(2,2))
 barplot(missingValues, ylab="N(Only Missing Values)", xlab="Colname", main="Missing Values")
-boxplot(pml_training %>% 
-          select_if(is.numeric), ylab="Values", xlab="Colname", main="Values")
 boxplot(sapply(pml_training %>% 
                  select_if(is.numeric), 
                function(x) (x - sd(x)) / (mean(x))),

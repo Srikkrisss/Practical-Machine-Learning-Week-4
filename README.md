@@ -7,7 +7,6 @@ Tobias Heidler
   - [Data Sources](#data-sources)
   - [Data Import & Transformation](#data-import-transformation)
   - [Exploratory Analysis](#exploratory-analysis)
-      - [Possible Values](#possible-values)
   - [Model training](#model-training)
       - [Splitting the data](#splitting-the-data)
       - [Training](#training)
@@ -107,8 +106,6 @@ pml_testing <- prepare(pml_testing,F)
 ```
 
 ## Exploratory Analysis
-
-### Possible Values
 
 As seen in the first exploratory plot in the annex section there are
 many missing values which we will exclude in the upcoming analysis.
@@ -321,8 +318,6 @@ nClasses <- pml_training %>% count(classe)
 
 par(mfrow=c(2,2))
 barplot(missingValues, ylab="N(Only Missing Values)", xlab="Colname", main="Missing Values")
-boxplot(pml_training %>% 
-          select_if(is.numeric), ylab="Values", xlab="Colname", main="Values")
 boxplot(sapply(pml_training %>% 
                  select_if(is.numeric), 
                function(x) (x - sd(x)) / (mean(x))),
